@@ -1,0 +1,18 @@
+{% if args.num_measurement_days <= constraints.ADH_COMPLIANCE_DAYS %}
+Encourage patient to measure blood glucose daily and to provide data for each day. Review and adjust the treatment plan as necessary.<br/> 
+{% endif %}
+{% if args.percen_above_180.bg >= 80 %}
+Adjust or optimize oral medications and initiate basal insulin targeting fasting BG <180 mg/dL.<br/>
+{% elif args.percen_above_140_and_180.bg >= 80 %}
+Adjust or optimize oral medications and initiate basal insulin targeting fasting BG <130 mg/dL.<br/>
+{% endif %}
+Follow up in 2 weeks to monitor response, asses A1c.<br/>
+Provide education on glucose monitoring, medication adherence, lifestyle changes and hypoglycemia awareness.<br/>
+{% if (args.slopes.bg > constraints.SLOPE_THRESHOLD * constraints.SLOPE_BG_FACTOR) %}
+Recommending that the patient continue to monitor his blood glucose at home and keep a record of readings. In the meantime, I advise the patient to avoid activities that could cause his blood glucose to spike and to report any new symptoms or changes in patient's condition.<br/>
+{% elif (args.slopes.bg > constraints.SLOPE_THRESHOLD_SLIGHT * constraints.SLOPE_BG_FACTOR) %}
+The patient's blood glucose readings are higher than previous readings over the past month, indicating a possible trend of increasing blood glucose.<br/>
+{% endif %}
+{% if (args.range.bg > 40 ) or (args.deviation.bg > 11 and args.deviation.bg < 16 ) %}
+The patient's diabetes appears to be not optimally controlled. Further investigation is needed to determine the cause of these recent fluctuations and whether changes to his medication or lifestyle are needed.<br/>
+{% endif %}

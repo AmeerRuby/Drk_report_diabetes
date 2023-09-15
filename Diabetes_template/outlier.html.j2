@@ -1,0 +1,19 @@
+{% if args.percen_above_180.bg >= 80 %}
+Fasting blood glucose levels range from {{args.bg_min}} to {{args.bg_max}} over the one month period, indicating unstable/poorly control of fasting hyperglycemia.
+{% elif args.percen_above_140_and_180.bg >= 80 %}
+Fasting blood glucose levels range from {{args.bg_min}} to {{args.bg_max}} over the one month period, indicating inadequate control of fasting hyperglycemia.
+{% elif args.percen_above_140 >= 30 %}
+Risk of hyperglycemia.<br/r>
+{% elif args.percen_below_100 >= 30 %}
+Risk of hypoglycemia.<br/>
+{% endif %}
+
+{% if args.has_outliers %}
+    {% for outlier in args.outliers %}
+        {% if outlier < 100 %}
+        Outlier because it is lower than the normal range: {{ outlier }} mg/dL
+        {% elif outlier > 300 %}
+        Severe hyperglycemia and poor diabetes control. Reading: {{ outlier }} mg/dL
+        {% endif %}
+    {% endfor %}
+{% endif %}

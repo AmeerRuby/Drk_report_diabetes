@@ -1,0 +1,11 @@
+<p>The patient’s Glucose has been mostly within the target range, with readings ranging from {{args.bg_min}} to {{args.bg_max}} mg/dL.</p>
+
+<p>The median blood glucose level is {{args.median_bg}} mg/dL. This means half the data have levels below {{args.median_bg}} and half have levels above {{args.median_bg}}.</p>
+
+<p>The average (mean) blood glucose level is {{args.mean_bg}} mg/dL. This is slightly higher than the median, indicating the data may be skewed towards higher values.</p>
+
+<p>The 25th percentile is {{args.perc_25th}} mg/dL. This means 25% of data have glucose levels below {{args.perc_25th}}. The 75th percentile is {{args.perc_75th}} mg/dL, meaning 25% of data have levels above {{args.perc_75th}}.</p>
+
+{% if args.perc_25th > args.goal_range or args.perc_75th > args.goal_range %}
+<p>We can conclude that the patient's blood glucose levels are frequently above the recommended ranges, indicating poorly controlled diabetes. It would be advisable to reassess the patient's treatment regimen, dietary habits, exercise regimen, and any other factors that might be contributing to these elevated blood glucose levels.</p>
+{% endif %}

@@ -1,0 +1,28 @@
+{% if args.is_dmp == "diabetes type 1" or args.is_dmp == "diabetes type 2" %}
+The patient is a {{args.age}}-year-old 
+{% if args.gender != "UNKNOWN" and args.gender != "unknown" %}
+{{args.gender | lower}}
+{% endif %}
+ with a diagnosis of {{args.is_dmp}}. 
+{% else %}
+The patient is a {{args.age}}-year-old
+{% if args.gender != "UNKNOWN" and args.gender != "unknown" %}
+ {{args.gender | lower}}
+{% endif %}
+. 
+{% endif %}
+{% if args.symptoms_list|length > 0 %}
+The patient reports {% for key, value in args.symptoms_list.items() %}
+{% set symptoms = value|join(', ') %}
+{% if symptoms == "" %}
+no 
+{% else %}
+{{ symptoms | lower }} 
+{% endif %}
+symptom(s) with {{ key | upper }} Disease Management Plan
+{% if not loop.last %}
+, 
+{% endif %}
+{% endfor %}
+.
+{% endif %}

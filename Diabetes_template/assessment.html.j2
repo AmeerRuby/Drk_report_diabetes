@@ -1,0 +1,36 @@
+{% if args.num_measurement_days <= constraints.ADH_COMPLIANCE_DAYS %}
+Patient is not fully adhering to the plan for monitoring diabetes. It is important to monitor blood glucose regularly to prevent complications associated with diabetes. 
+{% endif %}
+{% if (args.percen_above_180.bg >= 80 or args.percen_above_140.bg >= 30 or args.percen_below_100 >= 30) %}
+    {% if args.is_dmp == "diabetes type 1" %}
+    Poorly controlled diabetes type 1 with 
+    {% elif args.is_dmp == "diabetes type 2" %}
+    Poorly controlled diabetes type 2 with 
+    {% endif %}
+    {% if args.percen_above_140.bg >= 30 %}Hyperglycemia.<br/>
+    {% elif args.percen_below_100 >= 30 %}Hypoglycemia.<br/r>
+    {% endif %}
+{% endif %}
+
+{% if args.percen_above_140_and_180.bg >= 80 and (args.percen_above_140.bg >= 30 or args.percen_below_100 >= 30) %}
+    {% if args.is_dmp == "diabetes type 1" %}
+    Inadequate control of diabetes type 1 with 
+    {% elif args.is_dmp == "diabetes type 2" %}
+    Inadequate control of diabetes type 2 with 
+    {% endif %}
+    {% if args.percen_above_140.bg >= 30 %}Hyperglycemia.<br/>
+    {% elif args.percen_below_100 >= 30 %}Hypoglycemia.<br/>
+    {% endif %}
+{% endif %}
+{% if args.has_outliers %}
+There are some concerning high values in patient's blood glucose readings. We need to monitor blood glucose closely and potentially adjust the medication regimen.<br/>
+{% endif %}
+{% if (args.slopes.bg > constraints.SLOPE_THRESHOLD * constraints.SLOPE_BG_FACTOR) %}
+The patient's diabetes appears to be worsening, as evidenced by the upward trend in blood glucose readings.<br/>
+{% elif (args.slopes.bg > constraints.SLOPE_THRESHOLD_SLIGHT * constraints.SLOPE_BG_FACTOR) %}
+The patient's blood glucose readings are higher than previous readings over the past month, indicating a possible trend of increasing blood glucose.<br/>
+{% endif %}
+{% if (args.range.bg > 40 ) or (args.deviation.bg > 11 and args.deviation.bg < 16 ) %}
+The patient's diabetes appears to be not optimally controlled. Further investigation is needed to determine the cause of these recent fluctuations and whether changes to his medication or lifestyle are needed.<br/>
+{% endif %}
+

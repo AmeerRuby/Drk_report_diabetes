@@ -1,0 +1,44 @@
+{% set total_alerts = 0 %}
+{% set total_days = args.measurements|map(attribute='timestamp')|unique|length %}
+{% set total_measurements = args.measurements|length %}
+{% set consecutive_alert_days = 0 %}
+{% set max_consecutive_alert_days = 0 %}
+{% set severe_hyperglycemia_days = 0 %}
+{% set last_alert_day = None %}
+
+{% for measurement in args.measurements %}
+    {% set alert = False %}
+    {% if measurement['timestamp'] >= two_weeks_ago %}
+        {% if measurement['blood_glucose'] > 300 %}
+        Red Alert: Abnormal blood glucose level > 300 mg/dL detected on {{ measurement['timestamp'].strftime('%Y-%m-%d') }}.<br/>
+        {% set alert = True %}
+        {% set total_alerts = total_alerts + 1 %}
+        {% set severe_hyperglycemia_days = severe_hyperglycemia_days + 1 %}
+        {% endif %}
+    {% else %}
+        {% if measurement['blood_glucose'] > 140 %}
+        Red Alert: Abnormal blood glucose level > 140 mg/dL detected on {{ measurement['timestamp'].strftime('%Y-%m-%d') }}.<br/>
+        {% set alert = True %}
+        {% set total_alerts = total_alerts + 1 %}
+        {% endif %}
+    {% endif %}
+    {% if alert and (last_alert_day is none or measurement['timestamp'].date() == last_alert_day.date() + timedelta(days=1)) %}
+        {% set consecutive_alert_days = consecutive_alert_days + 1 %}
+        {% set max_consecutive_alert_days = [max_consecutive_alert_days, consecutive_alert_days]|max %}
+    {% else %}
+        {% set consecutive_alert_days = 0 %}
+    {% endif %}
+    {% set last_alert_day = measurement['timestamp'] %}
+{% endfor %}
+
+There are {{ total_alerts }} alerts in {{ total_days }} days, the patient takes with the frequency's rate {{ (total_measurements / total_days)|round(1) }} measurements a day.<br/>
+
+{% if max_consecutive_alert_days > 10 %}
+Persistent Hyperglycemia: More than 10 consecutive days with red alerts.
+{% endif %}
+
+There are {{ severe_hyperglycemia_days }} days with blood glucose levels > 300 mg/dL.
+
+{% if max_consecutive_alert_days > 10 }
+Change plan or the medication have not been effective.
+{% endif %}

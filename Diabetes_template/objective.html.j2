@@ -1,0 +1,17 @@
+{% if args.bg_last %}
+The patient's most recent blood glucose reading was taken on {{args.bg_last['timestamp'].strftime('%Y-%m-%d %I:%M %p')}} 
+and showed a blood glucose reading of {{args.bg_last['blood_glucose']}} mg/dL. The patient presents with 
+{{args.num_measurement_days}} days of blood glucose measurements over the past 30 days, 
+{% if args.num_measurement_days > constraints.ADH_COMPLIANCE_DAYS %}
+meeting the complaint rule
+{% else %}
+which is non-complaint with the plan,
+{% endif %}
+ with a percentage of {{(args.num_measurement_days/30)|round(2)}}%. 
+{% else %}
+The patient did not take any measurement over the past 30 days.<br/>
+{% endif %}
+Fasting glucose from {{args.bg_min}} to {{args.bg_max}}.
+{% if percent_lower_than_70 >= 15 %}
+Multiple readings < 70 mg/dL, raising the risk of hypoglycemia.
+{% endif %}
